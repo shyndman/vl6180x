@@ -12,7 +12,8 @@ edition = "2018"
 exclude = [ "doc", "*.jpg", "*.png", "*.bmp" ]
 
 [dependencies]
-embedded-hal = {version = "0.2.7", features = ["unproven"]}
+embedded-hal       = {package = "embedded-hal", version = "1.0.0-rc.1"}
+embedded-hal-async = "1.0.0-rc.1"
 int-enum = {version = "0.5.0", default-features = false}
 
 [profile.release]

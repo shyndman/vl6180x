@@ -72,12 +72,13 @@
     warnings
 )]
 #![allow(dead_code)]
-pub use crate::register::ResultInterruptStatusGpioCode;
 pub use config::*;
-use embedded_hal::blocking::i2c::{Write, WriteRead};
-use embedded_hal::digital::v2::{InputPin, OutputPin};
+use embedded_hal::digital::{InputPin, OutputPin};
+use embedded_hal_async::i2c::I2c;
 pub use error::Error;
 pub use mode::*;
+
+pub use crate::register::ResultInterruptStatusGpioCode;
 mod config;
 mod device_status;
 mod error;
@@ -90,7 +91,7 @@ mod start_stop_measurements;
 
 /// VL6180 interface
 #[derive(Debug, Clone, Copy)]
-pub struct VL6180X<MODE, I2C: Write + WriteRead> {
+pub struct VL6180X<MODE, I2C: I2c> {
     mode: MODE,
     com: I2C,
     config: Config,
@@ -98,7 +99,7 @@ pub struct VL6180X<MODE, I2C: Write + WriteRead> {
 
 /// Convenience container for VL6180, x_shutdown_pin and interrupt_pin
 #[derive(Debug, Clone, Copy)]
-pub struct VL6180XwPins<MODE, I2C: Write + WriteRead, OP: OutputPin, IP: InputPin> {
+pub struct VL6180XwPins<MODE, I2C: I2c, OP: OutputPin, IP: InputPin> {
     /// VL6180
     pub vl6180x: VL6180X<MODE, I2C>,
     /// X Shutdown Pin, output high => powered on, output low => powered off.

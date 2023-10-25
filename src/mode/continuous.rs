@@ -1,7 +1,9 @@
-use crate::{error::Error, AllowCommunication, VL6180X};
-use embedded_hal::blocking::i2c::{Write, WriteRead};
+use embedded_hal_async::i2c::I2c;
 
-use super::{AllowReadMeasurement, AllowStartAmbientSingle, AllowStartRangeSingle, ReadyMode};
+use super::{
+    AllowReadMeasurement, AllowStartAmbientSingle, AllowStartRangeSingle, ReadyMode,
+};
+use crate::{error::Error, AllowCommunication, VL6180X};
 
 /// Mode in which continuous range measurements are being taken by the sensor
 #[derive(Debug, Copy, Clone)]
@@ -15,11 +17,13 @@ impl AllowCommunication for RangeContinuousMode {}
 
 impl<I2C, E> VL6180X<RangeContinuousMode, I2C>
 where
-    I2C: WriteRead<Error = E> + Write<Error = E>,
+    I2C: I2c<Error = E>,
 {
     /// Stops range continuous mode.
-    pub fn stop_range_continuous_mode(mut self) -> Result<VL6180X<ReadyMode, I2C>, Error<E>> {
-        self.toggle_range_continuous_direct()?;
+    pub async fn stop_range_continuous_mode(
+        mut self,
+    ) -> Result<VL6180X<ReadyMode, I2C>, Error<E>> {
+        self.toggle_range_continuous_direct().await?;
         Ok(self.into_mode(ReadyMode {}))
     }
 }
@@ -36,11 +40,13 @@ impl AllowCommunication for AmbientContinuousMode {}
 
 impl<I2C, E> VL6180X<AmbientContinuousMode, I2C>
 where
-    I2C: WriteRead<Error = E> + Write<Error = E>,
+    I2C: I2c<Error = E>,
 {
     /// Stops ambient continuous mode.
-    pub fn stop_ambient_continuous_mode(mut self) -> Result<VL6180X<ReadyMode, I2C>, Error<E>> {
-        self.toggle_ambient_continuous_direct()?;
+    pub async fn stop_ambient_continuous_mode(
+        mut self,
+    ) -> Result<VL6180X<ReadyMode, I2C>, Error<E>> {
+        self.toggle_ambient_continuous_direct().await?;
         Ok(self.into_mode(ReadyMode {}))
     }
 }
@@ -58,11 +64,13 @@ impl AllowCommunication for InterleavedContinuousMode {}
 
 impl<I2C, E> VL6180X<InterleavedContinuousMode, I2C>
 where
-    I2C: WriteRead<Error = E> + Write<Error = E>,
+    I2C: I2c<Error = E>,
 {
     /// Stops interleaved continuous mode.
-    pub fn stop_interleaved_continuous_mode(mut self) -> Result<VL6180X<ReadyMode, I2C>, Error<E>> {
-        self.stop_interleaved_continuous_direct()?;
+    pub async fn stop_interleaved_continuous_mode(
+        mut self,
+    ) -> Result<VL6180X<ReadyMode, I2C>, Error<E>> {
+        self.stop_interleaved_continuous_direct().await?;
         Ok(self.into_mode(ReadyMode {}))
     }
 }

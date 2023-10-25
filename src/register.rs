@@ -1,4 +1,5 @@
 use core::convert::TryFrom;
+
 use int_enum::{IntEnum, IntEnumError};
 
 #[cfg(test)]
@@ -81,12 +82,12 @@ pub enum Register16Bit {
 
 #[allow(non_camel_case_types)]
 pub enum Register32Bit {
-    RESULT__RANGE_RETURN_SIGNAL_COUNT = 0x06C,    // 32-bit
+    RESULT__RANGE_RETURN_SIGNAL_COUNT = 0x06C, // 32-bit
     RESULT__RANGE_REFERENCE_SIGNAL_COUNT = 0x070, // 32-bit
-    RESULT__RANGE_RETURN_AMB_COUNT = 0x074,       // 32-bit
-    RESULT__RANGE_REFERENCE_AMB_COUNT = 0x078,    // 32-bit
-    RESULT__RANGE_RETURN_CONV_TIME = 0x07C,       // 32-bit
-    RESULT__RANGE_REFERENCE_CONV_TIME = 0x080,    // 32-bit
+    RESULT__RANGE_RETURN_AMB_COUNT = 0x074,    // 32-bit
+    RESULT__RANGE_REFERENCE_AMB_COUNT = 0x078, // 32-bit
+    RESULT__RANGE_RETURN_CONV_TIME = 0x07C,    // 32-bit
+    RESULT__RANGE_REFERENCE_CONV_TIME = 0x080, // 32-bit
 }
 
 pub enum SysModeGpio1Polarity {
@@ -282,5 +283,7 @@ impl TryFrom<u8> for AmbientStatusErrorCode {
 // RANGE_SCALER values for 1x, 2x, 3x scaling - see STSW-IMG003 core/src/vl6180x_api.c (ScalerLookUP[])
 pub const RANGE_SCALAR_CODE: [u16; 4] = [0, 253, 127, 84];
 /// See datasheet 2.10.6 for more details
-pub const AMBIENT_ANALOGUE_GAIN_CODE: [u8; 8] = [0x46, 0x45, 0x44, 0x43, 0x42, 0x41, 0x40, 0x47];
-pub const AMBIENT_ANALOGUE_GAIN_VALUE: [f32; 8] = [1.01, 1.28, 1.72, 2.60, 5.21, 10.32, 20.0, 40.0];
+pub const AMBIENT_ANALOGUE_GAIN_CODE: [u8; 8] =
+    [0x46, 0x45, 0x44, 0x43, 0x42, 0x41, 0x40, 0x47];
+pub const AMBIENT_ANALOGUE_GAIN_VALUE: [f32; 8] =
+    [1.01, 1.28, 1.72, 2.60, 5.21, 10.32, 20.0, 40.0];

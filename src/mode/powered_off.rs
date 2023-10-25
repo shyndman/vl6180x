@@ -1,7 +1,5 @@
-use embedded_hal::{
-    blocking::i2c::{Write, WriteRead},
-    digital::v2::OutputPin,
-};
+use embedded_hal::digital::OutputPin;
+use embedded_hal_async::i2c::I2c;
 
 use crate::{error::Error2, mode::ReadyMode, VL6180X};
 
@@ -11,15 +9,15 @@ pub struct PoweredOffMode {}
 
 impl<I2C, E> VL6180X<PoweredOffMode, I2C>
 where
-    I2C: WriteRead<Error = E> + Write<Error = E>,
+    I2C: I2c<Error = E>,
 {
     /// Powers on the sensor by setting the `x_shutdown_pin` high.
     /// It then busy waits for the device to be booted and initializes the device.
-    pub fn power_on_and_init<PE, P: OutputPin<Error = PE>>(
+    pub async fn power_on_and_init<PE, P: OutputPin<Error = PE>>(
         mut self,
         x_shutdown_pin: &mut P,
     ) -> Result<VL6180X<ReadyMode, I2C>, Error2<E, PE>> {
-        self.power_on_and_init_direct(x_shutdown_pin)?;
+        self.power_on_and_init_direct(x_shutdown_pin).await?;
         Ok(self.into_mode(ReadyMode))
     }
 }

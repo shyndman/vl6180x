@@ -5,17 +5,16 @@ mod ready;
 
 pub use continuous::*;
 pub use dynamic::*;
-use embedded_hal::blocking::i2c::{Write, WriteRead};
-use embedded_hal::digital::v2::OutputPin;
+use embedded_hal::digital::OutputPin;
+use embedded_hal_async::i2c::I2c;
 pub use powered_off::*;
 pub use ready::*;
 
-use crate::error::Error;
-use crate::VL6180X;
+use crate::{error::Error, VL6180X};
 
 impl<MODE, I2C, E> VL6180X<MODE, I2C>
 where
-    I2C: WriteRead<Error = E> + Write<Error = E>,
+    I2C: I2c<Error = E>,
 {
     fn into_mode<MODE2>(self, mode: MODE2) -> VL6180X<MODE2, I2C> {
         VL6180X {
@@ -42,52 +41,52 @@ pub trait AllowStartRangeSingle {}
 
 impl<MODE, I2C, E> VL6180X<MODE, I2C>
 where
-    I2C: WriteRead<Error = E> + Write<Error = E>,
+    I2C: I2c<Error = E>,
     MODE: AllowReadMeasurement,
 {
     /// Blocking read of the range mesurement.
     /// The reading (whether single or continuous) must already have been started.
-    pub fn read_range_mm_blocking(&mut self) -> Result<u16, Error<E>> {
-        self.read_range_mm_blocking_direct()
+    pub async fn read_range_mm_blocking(&mut self) -> Result<u16, Error<E>> {
+        self.read_range_mm_blocking_direct().await
     }
 
     /// Non-blocking read of the range measurement.
     /// The reading (whether single or continuous) must already have been started.
     /// Returns [Error::ResultNotReady] if the result is not ready.
-    pub fn read_range_mm(&mut self) -> Result<u16, Error<E>> {
-        self.read_range_mm_direct()
+    pub async fn read_range_mm(&mut self) -> Result<u16, Error<E>> {
+        self.read_range_mm_direct().await
     }
 
     /// Blocking read of the ambient light mesurement.
     /// The reading (whether single or continuous) must already have been started.
-    pub fn read_ambient_lux_blocking(&mut self) -> Result<f32, Error<E>> {
-        self.read_ambient_lux_blocking_direct()
+    pub async fn read_ambient_lux_blocking(&mut self) -> Result<f32, Error<E>> {
+        self.read_ambient_lux_blocking_direct().await
     }
 
     /// Non-blocking read of the ambient light measurement.
     /// The reading (whether single or continuous) must already have been started.
     /// Returns [Error::ResultNotReady] if the result is not ready.
-    pub fn read_ambient_lux(&mut self) -> Result<f32, Error<E>> {
-        self.read_ambient_lux_direct()
+    pub async fn read_ambient_lux(&mut self) -> Result<f32, Error<E>> {
+        self.read_ambient_lux_direct().await
     }
 
     /// Blocking read of the raw ambient light mesurement.
     /// The reading (whether single or continuous) must already have been started.
-    pub fn read_ambient_blocking(&mut self) -> Result<u16, Error<E>> {
-        self.read_ambient_blocking_direct()
+    pub async fn read_ambient_blocking(&mut self) -> Result<u16, Error<E>> {
+        self.read_ambient_blocking_direct().await
     }
 
     /// Non-blocking read of the raw ambient light measurement.
     /// The reading (whether single or continuous) must already have been started.
     /// Returns [Error::ResultNotReady] if the result is not ready.
-    pub fn read_ambient(&mut self) -> Result<u16, Error<E>> {
-        self.read_ambient_direct()
+    pub async fn read_ambient(&mut self) -> Result<u16, Error<E>> {
+        self.read_ambient_direct().await
     }
 }
 
 impl<MODE, I2C, E> VL6180X<MODE, I2C>
 where
-    I2C: WriteRead<Error = E> + Write<Error = E>,
+    I2C: I2c<Error = E>,
     MODE: AllowStartAmbientSingle,
 {
     /// Trigger ambient light measurement in a non-blocking way.
@@ -100,15 +99,15 @@ where
     /// perform the regular checks in a blocking way.
     /// 3. Wait for the ambient interrupt to be triggered, indicating that the
     /// new sample is ready, then call the methods listed in option 1.
-    pub fn start_ambient_single(&mut self) -> Result<(), Error<E>> {
-        self.start_ambient_single_direct()?;
+    pub async fn start_ambient_single(&mut self) -> Result<(), Error<E>> {
+        self.start_ambient_single_direct().await?;
         Ok(())
     }
 }
 
 impl<MODE, I2C, E> VL6180X<MODE, I2C>
 where
-    I2C: WriteRead<Error = E> + Write<Error = E>,
+    I2C: I2c<Error = E>,
     MODE: AllowStartRangeSingle,
 {
     /// Trigger range mesurement in a non-blocking way.
@@ -119,47 +118,47 @@ where
     /// perform the regular checks in a blocking way.
     /// 3. Wait for the range interrupt to be triggered, indicating that the
     /// new sample is ready, then call [`read_range_mm()`](VL6180X::read_range_mm).
-    pub fn start_range_single(&mut self) -> Result<(), Error<E>> {
-        self.start_range_single_direct()?;
+    pub async fn start_range_single(&mut self) -> Result<(), Error<E>> {
+        self.start_range_single_direct().await?;
         Ok(())
     }
 }
 
 impl<MODE, I2C, E> VL6180X<MODE, I2C>
 where
-    I2C: WriteRead<Error = E> + Write<Error = E>,
+    I2C: I2c<Error = E>,
     MODE: AllowCommunication,
 {
     /// Read the model id of the sensor. Should return 0xB4.
-    pub fn read_model_id(&mut self) -> Result<u8, Error<E>> {
-        self.read_model_id_direct()
+    pub async fn read_model_id(&mut self) -> Result<u8, Error<E>> {
+        self.read_model_id_direct().await
     }
 
     /// Read the current interrupt status of the sensor.
     /// Can be in multiple states of [ResultInterruptStatusGpioCode](crate::register::ResultInterruptStatusGpioCode) at once.
     /// Use [ResultInterruptStatusGpioCode::has_status](crate::register::ResultInterruptStatusGpioCode::has_status) to look for particular states.
-    pub fn read_interrupt_status(&mut self) -> Result<u8, Error<E>> {
-        self.read_interrupt_status_direct()
+    pub async fn read_interrupt_status(&mut self) -> Result<u8, Error<E>> {
+        self.read_interrupt_status_direct().await
     }
 
     /// Clear error interrupt
-    pub fn clear_error_interrupt(&mut self) -> Result<(), Error<E>> {
-        self.clear_error_interrupt_direct()
+    pub async fn clear_error_interrupt(&mut self) -> Result<(), Error<E>> {
+        self.clear_error_interrupt_direct().await
     }
 
     /// Clear ambient interrupt
-    pub fn clear_ambient_interrupt(&mut self) -> Result<(), Error<E>> {
-        self.clear_ambient_interrupt_direct()
+    pub async fn clear_ambient_interrupt(&mut self) -> Result<(), Error<E>> {
+        self.clear_ambient_interrupt_direct().await
     }
 
     /// Clear range interrupt
-    pub fn clear_range_interrupt(&mut self) -> Result<(), Error<E>> {
-        self.clear_range_interrupt_direct()
+    pub async fn clear_range_interrupt(&mut self) -> Result<(), Error<E>> {
+        self.clear_range_interrupt_direct().await
     }
 
     /// Clear all interrupts (error, ambient and range)
-    pub fn clear_all_interrupts(&mut self) -> Result<(), Error<E>> {
-        self.clear_all_interrupts_direct()
+    pub async fn clear_all_interrupts(&mut self) -> Result<(), Error<E>> {
+        self.clear_all_interrupts_direct().await
     }
 
     /// Powers off the sensor by setting the `x_shutdown_pin` low.
@@ -179,7 +178,7 @@ where
     /// 0x00 - 0x07 and 0x78 - 0x7F are reserved
     ///
     /// AN4478: Using multiple VL6180X's in a single design
-    pub fn change_i2c_address(&mut self, new_address: u8) -> Result<(), Error<E>> {
-        self.change_i2c_address_direct(new_address)
+    pub async fn change_i2c_address(&mut self, new_address: u8) -> Result<(), Error<E>> {
+        self.change_i2c_address_direct(new_address).await
     }
 }
