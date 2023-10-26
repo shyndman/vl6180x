@@ -155,6 +155,7 @@ pub enum InterleavedModeEnableCode {
 /// Use [`has_status()`](ResultInterruptStatusGpioCode::has_status) to check if the result returned from [`read_interrupt_status()`](crate::VL6180X::read_interrupt_status)
 /// Register: RESULT__INTERRUPT_STATUS_GPIO
 #[derive(Debug, Copy, Clone, PartialEq)]
+#[cfg_attr(feature = "defmt", derive(::defmt::Format))]
 pub enum ResultInterruptStatusGpioCode {
     /// No error reported
     NoError, // 0b00_XXX_XXX
@@ -209,6 +210,7 @@ impl ResultInterruptStatusGpioCode {
 // Bits 7:4 of what is returned from the register
 #[repr(u8)]
 #[derive(Debug, Copy, Clone, IntEnum, PartialEq)]
+#[cfg_attr(feature = "defmt", derive(::defmt::Format))]
 pub enum RangeStatusErrorCode {
     /// Valid measurement
     NoError = 0b0000,
@@ -259,6 +261,7 @@ impl TryFrom<u8> for RangeStatusErrorCode {
 // Bits 7:4 of what is returned from the register
 #[repr(u8)]
 #[derive(Debug, Copy, Clone, IntEnum, PartialEq)]
+#[cfg_attr(feature = "defmt", derive(::defmt::Format))]
 pub enum AmbientStatusErrorCode {
     /// Valid measurement
     NoError = 0b0000,

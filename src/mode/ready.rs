@@ -8,6 +8,7 @@ use crate::{error::Error, AllowCommunication, Config, VL6180X};
 /// Sensor has been configured and is ready to take single measurements or switch to a
 /// continuous measurement mode
 #[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "defmt", derive(::defmt::Format))]
 pub struct ReadyMode;
 
 impl AllowCommunication for ReadyMode {}

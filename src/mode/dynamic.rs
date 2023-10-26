@@ -12,6 +12,7 @@ use crate::{
 /// and without problems with ownership, or references, at the cost of some
 /// performance and the risk of runtime errors.
 #[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "defmt", derive(::defmt::Format))]
 pub struct DynamicMode {
     operating_mode: OperatingMode,
 }
@@ -19,6 +20,7 @@ pub struct DynamicMode {
 /// Sensor operating modes that the driver uses to determine
 /// if a method call is valid in [DynamicMode](crate::mode::DynamicMode).
 #[derive(Debug, Copy, Clone, PartialEq)]
+#[cfg_attr(feature = "defmt", derive(::defmt::Format))]
 pub enum OperatingMode {
     /// Mirrors [PoweredOffMode](crate::mode::PoweredOffMode)
     PoweredOff,

@@ -5,6 +5,7 @@ use crate::{error::Error2, mode::ReadyMode, VL6180X};
 
 /// Mode in which the sensor is powered off.
 #[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "defmt", derive(::defmt::Format))]
 pub struct PoweredOffMode {}
 
 impl<I2C, E> VL6180X<PoweredOffMode, I2C>

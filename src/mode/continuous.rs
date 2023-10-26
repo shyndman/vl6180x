@@ -7,6 +7,7 @@ use crate::{error::Error, AllowCommunication, VL6180X};
 
 /// Mode in which continuous range measurements are being taken by the sensor
 #[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "defmt", derive(::defmt::Format))]
 pub struct RangeContinuousMode;
 
 impl AllowReadMeasurement for RangeContinuousMode {}
@@ -30,6 +31,7 @@ where
 
 /// Mode in which continuous ambient light measurements are being taken by the sensor
 #[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "defmt", derive(::defmt::Format))]
 pub struct AmbientContinuousMode;
 
 impl AllowReadMeasurement for AmbientContinuousMode {}
@@ -56,6 +58,7 @@ where
 /// and repeated after an interval specified by
 /// [`set_ambient_intermeasurement_period()`](crate::config::Config::set_ambient_inter_measurement_period)
 #[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "defmt", derive(::defmt::Format))]
 pub struct InterleavedContinuousMode {}
 
 impl AllowReadMeasurement for InterleavedContinuousMode {}

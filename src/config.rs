@@ -5,6 +5,7 @@ mod config_tests;
 
 /// Options for configuring the interrupt trigger condition for ambient measurement.
 #[derive(Debug, Clone, Copy)]
+#[cfg_attr(feature = "defmt", derive(::defmt::Format))]
 pub enum AmbientInterruptMode {
     /// No interrupts will be triggered
     Disabled = 0,
@@ -20,6 +21,7 @@ pub enum AmbientInterruptMode {
 
 /// Options for configuring the interrupt trigger condition for range measurement.
 #[derive(Debug, Clone, Copy)]
+#[cfg_attr(feature = "defmt", derive(::defmt::Format))]
 pub enum RangeInterruptMode {
     /// No interrupts will be triggered (Default)
     Disabled = 0,
@@ -35,6 +37,7 @@ pub enum RangeInterruptMode {
 
 /// Config information for the driver.
 #[derive(Debug, Clone, Copy)]
+#[cfg_attr(feature = "defmt", derive(::defmt::Format))]
 pub struct Config {
     pub(super) ptp_offset: u8,
 
